@@ -62,8 +62,6 @@ jobs:
       contents: read
       id-token: write
       attestations: write
-    outputs:
-      tag_image: ${{ steps.meta.outputs.tags }}
     steps:
       - name: Check out the repo  # Faz o checkout do repositório
         uses: actions/checkout@v4
@@ -110,14 +108,10 @@ jobs:
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Pull Docker Image
-      env:
-          tag: ${{needs.push_to_registry.outputs.tag_image}}
-      run: docker pull ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ env.tag }}
+      run: docker pull ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}
 
     - name: Run Docker Container
-      env:
-        tag: ${{needs.push_to_registry.outputs.tag_image}}
-      run: docker run -d --name my_container ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ env.tag }}
+      run: docker run -d --name my_container ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}
 
     - name: Wait for Container to be ready
       run: sleep 10
