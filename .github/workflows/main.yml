@@ -1,38 +1,52 @@
-name: GitHub Actions Demo  # Nome do fluxo de trabalho
+# Esse fluxo de trabalho usa ações que não são certificadas pelo GitHub.
+# São fornecidas por terceiros e regidas por
+# termos de serviço, política de privacidade e suporte separados
+# online.
 
-on: 
-  push:  # Evento que aciona o fluxo de trabalho (no caso, um push)
-    paths-ignore:
-      - 'README.md'  # Ignora o arquivo README.md
-      - '.gitgnore'  # Ignora o arquivo .gitignore
+# O GitHub recomenda fixar ações em um SHA de commit.
+# Para obter uma versão mais recente, você precisará atualizar o SHA.
+# Você também pode fazer referência a uma marca ou branch, mas a ação pode ser alterada sem aviso.
 
-jobs:  # Definição dos trabalhos a serem executados
+name: Publish Docker image
 
-  build:  # Nome do trabalho
+on:
+  release:
+    types: [published]
 
-    runs-on: ubuntu-latest  # Sistema operacional em que o trabalho será executado (no caso, Ubuntu)
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
 
-    steps:  # Passos a serem executados no trabalho
-      - uses: actions/checkout@v4  # Passo para fazer o checkout do repositório
-      - name: Build Node.js  # Nome do passo
-        uses: actions/setup-node@v4  # Passo para configurar o ambiente Node.js
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
-          node-version: '18.x'  # Versão do Node.js a ser usada
-      - name: Install dependencies  # Nome do passo
-        run: cd app && npm install  # Comando para instalar as dependências do projeto
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-  
-  test: # Nome do trabalho
-
-    runs-on: ubuntu-latest # Sistema operacional em que o trabalho será executado (no caso, Ubuntu)
-
-    steps: # Passos a serem executados no trabalho
-      - uses: actions/checkout@v4 # Passo para fazer o checkout do repositório
-      - name: Test Node.js # Nome do passo
-        uses: actions/setup-node@v4 # Passo para configurar o ambiente Node.js
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          node-version: '18.x' # Versão do Node.js a ser usada
-      - name: Install dependencies # Nome do passo
-        run: cd app && npm install # Comando para instalar as dependências do projeto
-      - name: Run tests # Nome do passo
-        run: cd app && npm test # Comando para executar os testes do projeto
+          images: my-docker-hub-namespace/my-docker-hub-repository
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      
+      
+      - name: Generate artifact attestation uses: actions/attest-build-provenance@v1 with:   subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}   subject-digest: ${{ steps.push.outputs.digest }}   push-to-registry: true
+      

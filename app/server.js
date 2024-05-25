@@ -24,6 +24,6 @@ app.get('*', function(req, res){
 });
 
 
-app.listen(3000, function () {
-  console.log("Let's get some fun on port 3000!");
+app.listen(8080, function () {
+  console.log("Let's get some fun on http://localhost:8080!");
 });
