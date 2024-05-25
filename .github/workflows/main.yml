@@ -116,12 +116,12 @@ jobs:
     - name: Pull Docker Image
       env:
         docker_image: ${{needs.push_to_registry.outputs.docker_image}}
-      run: docker pull $docker_image
+      run: docker pull ${{ env.docker_image }}
 
     - name: Run Docker Container
       env:
         docker_image: ${{needs.push_to_registry.outputs.docker_image}}
-      run: docker run -d --name my_container $docker_image
+      run: docker run -d --name my_container ${{ env.docker_image }}
 
     - name: Wait for Container to be ready
       run: sleep 10
