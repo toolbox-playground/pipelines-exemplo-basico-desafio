@@ -90,11 +90,7 @@ jobs:
           push-to-registry: true  # Define se a atestação deve ser enviada para o registro
 
       - name: Docker Image
-        outputs:
-          docker_image: ${{ steps.docker_image.outputs.test }}
-        steps:
-          - id: docker_image
-          run: echo "docker_image=${{ steps.push.outputs.image }}" >> "$GITHUB_OUTPUT"
+        run: echo "docker_image=${{ steps.push.outputs.image }}" >> "$GITHUB_OUTPUT"
       
 
   docker_test:
@@ -111,10 +107,10 @@ jobs:
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Pull Docker Image
-      run: docker pull ${{ steps.meta.outputs.tags }}
+      run: docker pull ${{ env.IMAGE }}
 
     - name: Run Docker Container
-      run: docker run -d --name my_container ${{ steps.meta.outputs.tags }}
+      run: docker run -d --name my_container ${{ env.IMAGE }}
 
     - name: Wait for Container to be ready
       run: sleep 10
