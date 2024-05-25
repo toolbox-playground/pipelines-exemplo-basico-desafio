@@ -63,7 +63,7 @@ jobs:
       id-token: write
       attestations: write
     outputs:
-      docker_image: "${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ steps.meta.outputs.tags }}" # Define a saída do trabalho
+      docker_image: "${{ steps.docker_image.outputs.docker_image }}" # Define a saída do trabalho
     steps:
       - name: Check out the repo  # Faz o checkout do repositório
         uses: actions/checkout@v4
@@ -98,7 +98,8 @@ jobs:
           push-to-registry: true  # Define se a atestação deve ser enviada para o registro      
       
       - name: Output Docker image name
-        run: echo "${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ steps.meta.outputs.tags }}" # Define a saída do trabalho
+        id: docker_image
+        run: echo docker_image="${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ steps.meta.outputs.tags }} >> $GITHUB_OUTPUT" # Define a saída do trabalho
 
   docker_test:
     runs-on: ubuntu-latest
