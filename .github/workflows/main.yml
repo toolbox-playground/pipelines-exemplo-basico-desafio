@@ -15,6 +15,10 @@ on:
         - 'README.md'  # Ignora o arquivo README.md
         - '.gitgnore'  # Ignora o arquivo .gitignore
 
+env:
+    REGISTRY: docker.io
+    IMAGE_NAME: ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}
+
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
