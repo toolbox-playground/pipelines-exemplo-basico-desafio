@@ -81,10 +81,6 @@ jobs:
           push: true  # Define se a imagem deve ser enviada para o Docker Hub
           tags: ${{ steps.meta.outputs.tags }}  # Define as tags da imagem com base nos metadados extraídos
           labels: ${{ steps.meta.outputs.labels }}  # Define as labels da imagem com base nos metadados extraídos
-      
-      - name: Image name  # Nome da imagem
-        run:
-          echo Nome da imagem ${{ steps.push.outputs.image }}
 
       - name: Generate artifact attestation  # Gera uma atestação de artefato
         uses: actions/attest-build-provenance@v1 
@@ -93,9 +89,19 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}  # Define o digest do assunto da atestação
           push-to-registry: true  # Define se a atestação deve ser enviada para o registro
 
+      - name: Docker Image
+        outputs:
+          docker_image: ${{ steps.docker_image.outputs.test }}
+        steps:
+          - id: docker_image
+          run: echo "docker_image=${{ steps.push.outputs.image }}" >> "$GITHUB_OUTPUT"
+      
+
   docker_test:
     runs-on: ubuntu-latest
     needs: push_to_registry
+    env:
+      IMAGE: ${{ needs.push_to_registry.outputs.docker_image }}
 
     steps:
     - name: Checkout repository
