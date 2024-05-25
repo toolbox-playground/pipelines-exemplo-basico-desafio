@@ -98,7 +98,7 @@ jobs:
           push-to-registry: true  # Define se a atestação deve ser enviada para o registro      
       
       - name: Output Docker image name
-        run: echo ${{ steps.output.outputs.docker_image }}
+        run: echo "${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ steps.meta.outputs.tags }}" # Define a saída do trabalho
 
   docker_test:
     runs-on: ubuntu-latest
