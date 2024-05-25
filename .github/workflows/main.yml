@@ -116,7 +116,9 @@ jobs:
     - name: Pull Docker Image
       env:
         docker_image: ${{needs.push_to_registry.outputs.docker_image}}
-      run: docker pull ${{ env.docker_image }}
+      run: |
+        echo Teste ${{ needs.push_to_registry.outputs.docker_image }}
+        docker pull ${{ env.docker_image }}
 
     - name: Run Docker Container
       env:
