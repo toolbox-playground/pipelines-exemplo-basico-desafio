@@ -15,6 +15,12 @@ on:
       - 'README.md'  # Ignora o arquivo README.md
       - '.gitgnore'  # Ignora o arquivo .gitignore
       - 'release.yml'  # Ignora o arquivo release.yml
+  workflow_call:
+    # Map the workflow outputs to job outputs
+    outputs:
+      docker_image:
+        description: "Docker Image"
+        value: ${{ jobs.push_to_registry.push.outputs.image }}
 
 jobs:
 
@@ -56,6 +62,8 @@ jobs:
       contents: read
       id-token: write
       attestations: write
+    outputs:
+      docker_image: ${{ steps.push.outputs.image }}
     steps:
       - name: Check out the repo  # Faz o checkout do repositório
         uses: actions/checkout@v4
@@ -101,10 +109,10 @@ jobs:
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Pull Docker Image
-      run: docker pull ${{ needs.push_to_registry.outputs['push.outputs.image'] }}
+      run: docker pull ${{ needs.push_to_registry.outputs.docker_image }}
 
     - name: Run Docker Container
-      run: docker run -d --name my_container ${{ needs.push_to_registry.outputs['push.outputs.image'] }}
+      run: docker run -d --name my_container ${{ needs.push_to_registry.outputs.docker_image }}
 
     - name: Wait for Container to be ready
       run: sleep 10
