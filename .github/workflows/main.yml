@@ -63,7 +63,7 @@ jobs:
       id-token: write
       attestations: write
     outputs:
-      image: ${{ steps.push.outputs.image }}
+      tags: ${{ steps.meta.outputs.tags }}
     steps:
       - name: Check out the repo  # Faz o checkout do repositório
         uses: actions/checkout@v4
@@ -96,10 +96,6 @@ jobs:
           subject-name: ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}  # Define o nome do assunto da atestação
           subject-digest: ${{ steps.push.outputs.digest }}  # Define o digest do assunto da atestação
           push-to-registry: true  # Define se a atestação deve ser enviada para o registro      
-      
-      - name: Output Docker image name
-        id: docker_image
-        run: echo docker_image="${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ steps.meta.outputs.tags }} >> $GITHUB_OUTPUT" # Define a saída do trabalho
 
   docker_test:
     runs-on: ubuntu-latest
@@ -115,11 +111,11 @@ jobs:
 
     - name: Pull Docker Image
       run: |
-        echo Teste ${{ needs.push_to_registry.outputs.image }}
-        docker pull ${{ needs.push_to_registry.outputs.image }}
+        echo Teste ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ needs.push_to_registry.outputs.tags }}
+        docker pull ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ needs.push_to_registry.outputs.tags }}
 
     - name: Run Docker Container
-      run: docker run -d --name my_container ${{ needs.push_to_registry.outputs.image }}
+      run: docker run -d --name my_container ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ needs.push_to_registry.outputs.tags }}
 
     - name: Wait for Container to be ready
       run: sleep 10
