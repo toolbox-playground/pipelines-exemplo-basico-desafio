@@ -24,46 +24,46 @@ on:
 
 jobs:
 
-  build:  # Nome do trabalho
+  # build:  # Nome do trabalho
 
-    runs-on: ubuntu-latest  # Sistema operacional em que o trabalho será executado (no caso, Ubuntu)
+  #   runs-on: ubuntu-latest  # Sistema operacional em que o trabalho será executado (no caso, Ubuntu)
 
-    steps:  # Passos a serem executados no trabalho
-      - uses: actions/checkout@v4  # Passo para fazer o checkout do repositório
-      - name: Build Node.js  # Nome do passo
-        uses: actions/setup-node@v4  # Passo para configurar o ambiente Node.js
-        with:
-          node-version: '18.x'  # Versão do Node.js a ser usada
-      - name: Install dependencies  # Nome do passo
-        run: cd app && npm install  # Comando para instalar as dependências do projeto
+  #   steps:  # Passos a serem executados no trabalho
+  #     - uses: actions/checkout@v4  # Passo para fazer o checkout do repositório
+  #     - name: Build Node.js  # Nome do passo
+  #       uses: actions/setup-node@v4  # Passo para configurar o ambiente Node.js
+  #       with:
+  #         node-version: '18.x'  # Versão do Node.js a ser usada
+  #     - name: Install dependencies  # Nome do passo
+  #       run: cd app && npm install  # Comando para instalar as dependências do projeto
 
   
-  test: # Nome do trabalho
+  # test: # Nome do trabalho
 
-    runs-on: ubuntu-latest # Sistema operacional em que o trabalho será executado (no caso, Ubuntu)
-    needs: build # Define que o trabalho depende do trabalho "build"
-    steps: # Passos a serem executados no trabalho
-      - uses: actions/checkout@v4 # Passo para fazer o checkout do repositório
-      - name: Test Node.js # Nome do passo
-        uses: actions/setup-node@v4 # Passo para configurar o ambiente Node.js
-        with:
-          node-version: '18.x' # Versão do Node.js a ser usada
-      - name: Install dependencies # Nome do passo
-        run: cd app && npm install # Comando para instalar as dependências do projeto
-      - name: Run tests # Nome do passo
-        run: cd app && npm test # Comando para executar os testes do projeto
+  #   runs-on: ubuntu-latest # Sistema operacional em que o trabalho será executado (no caso, Ubuntu)
+  #   needs: build # Define que o trabalho depende do trabalho "build"
+  #   steps: # Passos a serem executados no trabalho
+  #     - uses: actions/checkout@v4 # Passo para fazer o checkout do repositório
+  #     - name: Test Node.js # Nome do passo
+  #       uses: actions/setup-node@v4 # Passo para configurar o ambiente Node.js
+  #       with:
+  #         node-version: '18.x' # Versão do Node.js a ser usada
+  #     - name: Install dependencies # Nome do passo
+  #       run: cd app && npm install # Comando para instalar as dependências do projeto
+  #     - name: Run tests # Nome do passo
+  #       run: cd app && npm test # Comando para executar os testes do projeto
 
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest  # Define o sistema operacional em que o fluxo de trabalho será executado
-    needs: test  # Define que o trabalho depende do trabalho "test"
+    # needs: test  # Define que o trabalho depende do trabalho "test"
     permissions:
       packages: write
       contents: read
       id-token: write
       attestations: write
     outputs:
-      docker_image: ${{ steps.push.outputs.image }}
+      docker_image: "${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ steps.meta.outputs.tags }}" # Define a saída do trabalho
     steps:
       - name: Check out the repo  # Faz o checkout do repositório
         uses: actions/checkout@v4
@@ -96,6 +96,9 @@ jobs:
           subject-name: ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}  # Define o nome do assunto da atestação
           subject-digest: ${{ steps.push.outputs.digest }}  # Define o digest do assunto da atestação
           push-to-registry: true  # Define se a atestação deve ser enviada para o registro      
+      
+      - name: Output Docker image name
+        run: echo ${{ steps.output.outputs.docker_image }}
 
   docker_test:
     runs-on: ubuntu-latest
