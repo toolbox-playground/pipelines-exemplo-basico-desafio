@@ -14,6 +14,7 @@ on:
         paths-ignore:
         - 'README.md'  # Ignora o arquivo README.md
         - '.gitgnore'  # Ignora o arquivo .gitignore
+        - 'release.yml'  # Ignora o arquivo release.yml
 
 jobs:
   push_to_registry:
