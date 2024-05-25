@@ -7,13 +7,11 @@
 # Para obter uma versão mais recente, você precisará atualizar o SHA.
 # Você também pode fazer referência a uma marca ou branch, mas a ação pode ser alterada sem aviso.
 
-name: Publish Docker image version
+name: Publish Docker image
 
 on:
-    push:  # Evento que aciona o fluxo de trabalho (no caso, um push)
-        paths-ignore:
-        - 'README.md'  # Ignora o arquivo README.md
-        - '.gitgnore'  # Ignora o arquivo .gitignore
+  release:
+    types: [published]
 
 jobs:
   push_to_registry:
