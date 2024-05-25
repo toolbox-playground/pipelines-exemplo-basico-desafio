@@ -112,9 +112,7 @@ jobs:
     - name: Pull Docker Image
       env:
           tag: ${{needs.push_to_registry.outputs.tag_image}}
-      run: |
-        echo Teste ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ env.tag }}
-        docker pull ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ env.tag }}
+      run: docker pull ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:${{ env.tag }}
 
     - name: Run Docker Container
       env:
