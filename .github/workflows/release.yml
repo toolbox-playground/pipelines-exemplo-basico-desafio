@@ -11,48 +11,46 @@ name: Publish Docker image
 
 on:
   release:
-    types: [published]
+    types: [published]  # Dispara o fluxo de trabalho quando uma nova versão é publicada
 
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Define o sistema operacional em que o fluxo de trabalho será executado
     permissions:
       packages: write
       contents: read
       id-token: write
       attestations: write
     steps:
-      - name: Check out the repo
+      - name: Check out the repo  # Faz o checkout do repositório
         uses: actions/checkout@v4
 
-      - name: Log in to Docker Hub
+      - name: Log in to Docker Hub  # Faz login no Docker Hub
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ secrets.DOCKER_USERNAME }}  # Usa as credenciais do Docker Hub armazenadas como secretos no repositório
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Extract metadata (tags, labels) for Docker
+      - name: Extract metadata (tags, labels) for Docker  # Extrai metadados (tags, labels) para o Docker
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: "${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}"
+          images: "${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}"  # Define as imagens Docker a serem processadas
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image  # Constrói e envia a imagem Docker para o Docker Hub
         id: push
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          context: .  # Define o contexto do build, neste caso, o diretório atual
+          file: ./Dockerfile  # Especifica o arquivo Dockerfile a ser usado
+          push: true  # Define se a imagem deve ser enviada para o Docker Hub
+          tags: ${{ steps.meta.outputs.tags }}  # Define as tags da imagem com base nos metadados extraídos
+          labels: ${{ steps.meta.outputs.labels }}  # Define as labels da imagem com base nos metadados extraídos
       
-      
-      - name: Generate artifact attestation 
+      - name: Generate artifact attestation  # Gera uma atestação de artefato
         uses: actions/attest-build-provenance@v1 
         with:   
-          subject-name: ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}
-          subject-digest: ${{ steps.push.outputs.digest }}   
-          push-to-registry: true
-      
+          subject-name: ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}  # Define o nome do assunto da atestação
+          subject-digest: ${{ steps.push.outputs.digest }}  # Define o digest do assunto da atestação
+          push-to-registry: true  # Define se a atestação deve ser enviada para o registro
