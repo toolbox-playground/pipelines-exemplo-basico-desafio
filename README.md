@@ -1,6 +1,6 @@
 # Fluxo de Trabalho do GitHub Actions
 
-![Toolbox Playground](../img/toolbox-playground.png)
+![Toolbox Playground](img/toolbox-playground.png)
 
 ## O que é o Fluxo de Trabalho do GitHub Actions
 
