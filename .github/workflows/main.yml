@@ -122,14 +122,22 @@ jobs:
         distribution: 'adopt'
         java-version: '11'
 
-    - name: Init gradle wrapper
-      run: gradle wrapper
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: 8.5
+    
+    - name: Check gradle version
+      run: gradle --version
 
-    - name: Change wrapper permissions
-      run: chmod +x ./gradlew
+    #- name: Init gradle wrapper
+    #  run: gradle wrapper
+
+    #- name: Change wrapper permissions
+    #  run: chmod +x ./gradlew
   
-    - name: Install dependencies
-      run: ./gradlew clean build
+    #- name: Install dependencies
+    #  run: ./gradlew clean build
 
     - name: Run Tests Inside Container
       run: docker exec my_container ./gradlew test
