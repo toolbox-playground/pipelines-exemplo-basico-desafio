@@ -122,6 +122,12 @@ jobs:
         distribution: 'adopt'
         java-version: '11'
 
+    - name: Init gradle wrapper
+      run: gradle wrapper
+
+    - name: Change wrapper permissions
+      run: chmod +x ./gradlew
+  
     - name: Install dependencies
       run: ./gradlew clean build
 
