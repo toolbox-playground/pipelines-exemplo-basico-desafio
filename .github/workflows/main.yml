@@ -79,7 +79,9 @@ jobs:
           context: .  # Define o contexto do build, neste caso, o diretório atual
           file: ./Dockerfile  # Especifica o arquivo Dockerfile a ser usado
           push: true  # Define se a imagem deve ser enviada para o Docker Hub
-          tags: (main, $BUILD)  # Define as tags da imagem com base nos metadados extraídos
+            tags: 
+            - main
+            - $BUILD
           labels: ${{ steps.meta.outputs.labels }}  # Define as labels da imagem com base nos metadados extraídos
 
       - name: Generate artifact attestation  # Gera uma atestação de artefato
