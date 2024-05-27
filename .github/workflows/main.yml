@@ -110,7 +110,7 @@ jobs:
     - name: Wait for Container to be ready
       run: sleep 10
 
-    -name: Check if container is running
+    - name: Check if container is running
       run: docker ps -a
 
     - name: Stop and Remove Docker Container
