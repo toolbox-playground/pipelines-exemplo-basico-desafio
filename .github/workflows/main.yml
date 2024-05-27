@@ -116,13 +116,30 @@ jobs:
     #     distribution: 'adopt'
     #     java-version: '11'
 
-    # - name: Run Tests Inside Container
-    #   run: docker exec my_container ./gradlew test
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: 8.5
+    
+    - name: Check gradle version
+      run: gradle --version
+
+    #- name: Init gradle wrapper
+    #  run: gradle wrapper
+
+    #- name: Change wrapper permissions
+    #  run: chmod +x ./gradlew
+  
+    #- name: Install dependencies
+    #  run: ./gradlew clean build
+
+    - name: Run Tests Inside Container
+      run: docker exec my_container ./gradlew test
 
     # - name: Run SonarCloud Scan
     #   env:
     #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     #   run: docker exec my_container ./gradlew sonarqube -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.host.url=https://sonarcloud.io
 
-    # - name: Stop and Remove Docker Container
-    #   run: docker rm -f my_container
+    - name: Stop and Remove Docker Container
+      run: docker rm -f my_container
