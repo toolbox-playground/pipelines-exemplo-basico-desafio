@@ -129,6 +129,7 @@ jobs:
         sed -i 's/\${SONAR_PROJECT_KEY}/'"${{ secrets.SONAR_PROJECT_KEY }}"'/g' sonar-project.properties
         sed -i 's/\${SONAR_ORG}/'"${{ secrets.SONAR_ORG }}"'/g' sonar-project.properties
         sed -i 's/\${SONAR_TOKEN}/'"${{ secrets.SONAR_TOKEN }}"'/g' sonar-project.properties
+        sed -i 's/\${SONAR_PROJECT_NAME}/'"${{ secrets.SONAR_PROJECT_NAME }}"'/g' sonar-project.properties
         
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
