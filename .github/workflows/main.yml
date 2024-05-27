@@ -123,7 +123,7 @@ jobs:
       with:
         # Disabling shallow clone is recommended for improving relevancy of reporting
         fetch-depth: 0
-        projectBaseDir: app
+        path: app
 
     - name: Set up SonarCloud
       run: |
