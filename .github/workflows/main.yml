@@ -105,7 +105,7 @@ jobs:
       run: docker pull ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:main
 
     - name: Run Docker Container
-      run: docker run -d --name my_container ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}
+      run: docker run -d --name nodejs ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}
 
     - name: Wait for Container to be ready
       run: sleep 10
@@ -114,7 +114,7 @@ jobs:
       run: docker ps -a
 
     - name: Stop and Remove Docker Container
-      run: docker rm -f my_container
+      run: docker rm -f nodejs
 
   sonarcloud:
     runs-on: ubuntu-latest
@@ -139,12 +139,12 @@ jobs:
     - name: Install dependencies
       run: ./gradlew clean build
     - name: Run Tests Inside Container
-      run: docker exec my_container ./gradlew test
+      run: docker exec nodejs ./gradlew test
     - name: Run SonarCloud Scan
       env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-      docker exec my_container ./gradlew sonarqube \
+      docker exec nodejs ./gradlew sonarqube \
         -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
         -Dsonar.organization=${{ secrets.SONAR_ORG }} \
         -Dsonar.host.url=https://sonarcloud.io
@@ -173,12 +173,12 @@ jobs:
     #  run: ./gradlew clean build
 
     # - name: Run Tests Inside Container
-    #   run: docker exec my_container ./gradlew test
+    #   run: docker exec nodejs ./gradlew test
 
     # - name: Run SonarCloud Scan
     #   env:
     #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    #   run: docker exec my_container ./gradlew sonarqube -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.host.url=https://sonarcloud.io
+    #   run: docker exec nodejs ./gradlew sonarqube -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.host.url=https://sonarcloud.io
 
     # - name: Run SonarCloud Scan
     #   env:
