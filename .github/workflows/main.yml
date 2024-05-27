@@ -108,6 +108,7 @@ jobs:
       run: docker rm -f nodejs
 
   sonarcloud:
+    name: SonarCloud Scan
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
