@@ -86,3 +86,58 @@ Para utilizar o SonarCloud, é necessário seguir alguns passos específicos que
    - Após a análise ser concluída, você pode verificar os resultados no dashboard do SonarCloud. Lá, você encontrará informações sobre qualidade de código, vulnerabilidades, bugs, code smells, cobertura de testes, entre outros.
 
 A sequência de criação do projeto primeiro é necessária porque o SonarCloud precisa das configurações do projeto para executar a análise de forma correta e segura. Isso inclui configurar permissões, definir padrões de qualidade e gerar tokens de autenticação.
+
+## Snyk
+
+https://github.com/snyk/actions/blob/master/node/README.md
+
+Para criar uma conta no Snyk e gerar um token de autenticação, siga os passos abaixo:
+
+### 1. Criar uma Conta no Snyk
+
+1. **Acesse o site do Snyk**:
+   Vá para [Snyk](https://snyk.io/).
+
+2. **Inscrever-se**:
+   Clique em "Sign Up" no canto superior direito. Você pode se inscrever utilizando sua conta do GitHub, Google, ou com um endereço de e-mail.
+
+3. **Completar o Registro**:
+   Siga as instruções para completar o registro. Se você usar GitHub ou Google para se inscrever, você precisará autorizar o Snyk a acessar sua conta.
+
+### 2. Gerar um Token de Autenticação
+
+1. **Acesse seu Painel do Snyk**:
+   Após se registrar e fazer login, você será redirecionado para o painel do Snyk.
+
+2. **Acessar Configurações de API**:
+   Clique em seu nome de usuário ou avatar no canto superior direito e selecione "Account settings" (Configurações da conta).
+
+3. **Navegar para Configurações de API**:
+   No painel de configurações, clique em "API tokens" na seção lateral esquerda.
+
+4. **Gerar um Novo Token**:
+   Clique no botão "Generate new API token". Um novo token será gerado e exibido na tela.
+
+5. **Copiar o Token**:
+   Copie o token gerado. Este é o token que você usará para configurar o GitHub Actions.
+
+### 3. Adicionar o Token aos Segredos do GitHub
+
+1. **Acessar seu Repositório no GitHub**:
+   Vá para o repositório onde você deseja configurar o Snyk.
+
+2. **Ir para Configurações**:
+   Clique em "Settings" (Configurações) no menu superior do repositório.
+
+3. **Acessar Segredos e Variáveis**:
+   No menu lateral esquerdo, clique em "Secrets and variables" e depois em "Actions".
+
+4. **Adicionar um Novo Segredo**:
+   Clique em "New repository secret".
+
+5. **Nomear e Colar o Token**:
+   - Nomeie o segredo como `SNYK_TOKEN`.
+   - Cole o token que você copiou do Snyk no campo "Value".
+
+6. **Salvar o Segredo**:
+   Clique em "Add secret" para salvar.

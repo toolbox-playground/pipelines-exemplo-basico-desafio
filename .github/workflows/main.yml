@@ -136,6 +136,6 @@ jobs:
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
         with:
-          args: --all-projects
+          args: --all-projects # Veiriica todas as dependências do projeto
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
