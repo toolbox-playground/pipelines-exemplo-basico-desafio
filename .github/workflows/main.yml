@@ -79,9 +79,7 @@ jobs:
           context: .  # Define o contexto do build, neste caso, o diretório atual
           file: ./Dockerfile  # Especifica o arquivo Dockerfile a ser usado
           push: true  # Define se a imagem deve ser enviada para o Docker Hub
-            tags: 
-            - main
-            - $BUILD
+          tags: ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:main,${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:$build  # Define as tags da imagem com base nos metadados extraídos
           labels: ${{ steps.meta.outputs.labels }}  # Define as labels da imagem com base nos metadados extraídos
 
       - name: Generate artifact attestation  # Gera uma atestação de artefato
@@ -112,7 +110,7 @@ jobs:
     - name: Wait for Container to be ready
       run: sleep 10
 
-    - name: Check if container is running
+    -name: Check if container is running
       run: docker ps -a
 
     - name: Stop and Remove Docker Container
