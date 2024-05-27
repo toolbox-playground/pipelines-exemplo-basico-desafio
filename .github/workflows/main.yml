@@ -15,48 +15,42 @@ on:
       - 'README.md'  # Ignora o arquivo README.md
       - '.gitgnore'  # Ignora o arquivo .gitignore
       - 'release.yml'  # Ignora o arquivo release.yml
-  workflow_call:
-    # Map the workflow outputs to job outputs
-    outputs:
-      docker_image:
-        description: "Docker Image"
-        value: ${{ jobs.push_to_registry.push.outputs.image }}
 
 jobs:
 
-  # build:  # Nome do trabalho
+  build:  # Nome do trabalho
 
-  #   runs-on: ubuntu-latest  # Sistema operacional em que o trabalho será executado (no caso, Ubuntu)
+    runs-on: ubuntu-latest  # Sistema operacional em que o trabalho será executado (no caso, Ubuntu)
 
-  #   steps:  # Passos a serem executados no trabalho
-  #     - uses: actions/checkout@v4  # Passo para fazer o checkout do repositório
-  #     - name: Build Node.js  # Nome do passo
-  #       uses: actions/setup-node@v4  # Passo para configurar o ambiente Node.js
-  #       with:
-  #         node-version: '18.x'  # Versão do Node.js a ser usada
-  #     - name: Install dependencies  # Nome do passo
-  #       run: cd app && npm install  # Comando para instalar as dependências do projeto
+    steps:  # Passos a serem executados no trabalho
+      - uses: actions/checkout@v4  # Passo para fazer o checkout do repositório
+      - name: Build Node.js  # Nome do passo
+        uses: actions/setup-node@v4  # Passo para configurar o ambiente Node.js
+        with:
+          node-version: '18.x'  # Versão do Node.js a ser usada
+      - name: Install dependencies  # Nome do passo
+        run: cd app && npm install  # Comando para instalar as dependências do projeto
 
   
-  # test: # Nome do trabalho
+  test: # Nome do trabalho
 
-  #   runs-on: ubuntu-latest # Sistema operacional em que o trabalho será executado (no caso, Ubuntu)
-  #   needs: build # Define que o trabalho depende do trabalho "build"
-  #   steps: # Passos a serem executados no trabalho
-  #     - uses: actions/checkout@v4 # Passo para fazer o checkout do repositório
-  #     - name: Test Node.js # Nome do passo
-  #       uses: actions/setup-node@v4 # Passo para configurar o ambiente Node.js
-  #       with:
-  #         node-version: '18.x' # Versão do Node.js a ser usada
-  #     - name: Install dependencies # Nome do passo
-  #       run: cd app && npm install # Comando para instalar as dependências do projeto
-  #     - name: Run tests # Nome do passo
-  #       run: cd app && npm test # Comando para executar os testes do projeto
+    runs-on: ubuntu-latest # Sistema operacional em que o trabalho será executado (no caso, Ubuntu)
+    needs: build # Define que o trabalho depende do trabalho "build"
+    steps: # Passos a serem executados no trabalho
+      - uses: actions/checkout@v4 # Passo para fazer o checkout do repositório
+      - name: Test Node.js # Nome do passo
+        uses: actions/setup-node@v4 # Passo para configurar o ambiente Node.js
+        with:
+          node-version: '18.x' # Versão do Node.js a ser usada
+      - name: Install dependencies # Nome do passo
+        run: cd app && npm install # Comando para instalar as dependências do projeto
+      - name: Run tests # Nome do passo
+        run: cd app && npm test # Comando para executar os testes do projeto
 
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest  # Define o sistema operacional em que o fluxo de trabalho será executado
-    # needs: test  # Define que o trabalho depende do trabalho "test"
+    needs: test  # Define que o trabalho depende do trabalho "test"
     permissions:
       packages: write
       contents: read
@@ -85,7 +79,7 @@ jobs:
           context: .  # Define o contexto do build, neste caso, o diretório atual
           file: ./Dockerfile  # Especifica o arquivo Dockerfile a ser usado
           push: true  # Define se a imagem deve ser enviada para o Docker Hub
-          tags: ${{ steps.meta.outputs.tags }}  # Define as tags da imagem com base nos metadados extraídos
+          tags: (main, $BUILD)  # Define as tags da imagem com base nos metadados extraídos
           labels: ${{ steps.meta.outputs.labels }}  # Define as labels da imagem com base nos metadados extraídos
 
       - name: Generate artifact attestation  # Gera uma atestação de artefato
@@ -108,7 +102,7 @@ jobs:
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Pull Docker Image
-      run: docker pull ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}
+      run: docker pull ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}:main
 
     - name: Run Docker Container
       run: docker run -d --name my_container ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_REPOSITORY }}
@@ -116,22 +110,22 @@ jobs:
     - name: Wait for Container to be ready
       run: sleep 10
 
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        distribution: 'adopt'
-        java-version: '11'
+    - name: Check if Container is running
+      run: docker ps
 
-    - name: Install dependencies
-      run: ./gradlew clean build
+    # - name: Set up JDK 11
+    #   uses: actions/setup-java@v2
+    #   with:
+    #     distribution: 'adopt'
+    #     java-version: '11'
 
-    - name: Run Tests Inside Container
-      run: docker exec my_container ./gradlew test
+    # - name: Run Tests Inside Container
+    #   run: docker exec my_container ./gradlew test
 
-    - name: Run SonarCloud Scan
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: docker exec my_container ./gradlew sonarqube -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.host.url=https://sonarcloud.io
+    # - name: Run SonarCloud Scan
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #   run: docker exec my_container ./gradlew sonarqube -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORG }} -Dsonar.host.url=https://sonarcloud.io
 
-    - name: Stop and Remove Docker Container
-      run: docker rm -f my_container
+    # - name: Stop and Remove Docker Container
+    #   run: docker rm -f my_container
