@@ -52,3 +52,8 @@ Vamos analisar cada linha de código no arquivo [.github/workflows/main.yml](.gi
 O arquivo `main.yml` deve ser sempre salvo na pasta `.github\workflows`, conforme está neste repositório.
 
 Essas são as explicações para cada linha do código YAML fornecido. Cada linha desempenha um papel específico na definição do processo de integração contínua e na execução dos jobs necessários para compilar e testar o aplicativo.
+
+
+## SonarCloud
+
+Criar conta no sonar cloud e logar no github actions, desativar a analise automatica

@@ -23,10 +23,6 @@ app.get('*', function(req, res){
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.get('*', function(req, res){
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
 
 app.listen(8080, function () {
   console.log("Let's get some fun on http://localhost:8080!");
