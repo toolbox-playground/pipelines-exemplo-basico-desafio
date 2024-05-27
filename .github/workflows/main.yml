@@ -32,6 +32,14 @@ jobs:
         SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
         SONAR_ORG: ${{ secrets.SONAR_ORG }}
         projectBaseDir: app
+        args: >
+          -Dsonar.organization=$SONAR_ORG
+          -Dsonar.projectKey=my-$SONAR_PROJECT_KEY
+          -Dsonar.projectName=pipelines-exemplo-basico-desafio
+          -Dsonar.projectVersion=1.0
+          -Dsonar.sources=.
+          -Dsonar.language=js
+          -Dsonar.sourceEncoding=UTF-8
 
   # build:  # Nome do trabalho
 
