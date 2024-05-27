@@ -57,3 +57,32 @@ Essas são as explicações para cada linha do código YAML fornecido. Cada linh
 ## SonarCloud
 
 Criar conta no sonar cloud e logar no github actions, desativar a analise automatica
+
+Para utilizar o SonarCloud, é necessário seguir alguns passos específicos que envolvem a criação e configuração do projeto. Aqui está um resumo do processo:
+
+1. **Criar uma Conta no SonarCloud:**
+   - Se você ainda não possui uma conta no SonarCloud, registre-se em [sonarcloud.io](https://sonarcloud.io/).
+
+2. **Criar um Novo Projeto:**
+   - Depois de fazer login, vá para a seção de "Projects" e clique em "Create new project".
+   - Você pode importar o projeto a partir de um repositório do GitHub, Bitbucket, GitLab ou Azure DevOps.
+
+3. **Configurar o Projeto:**
+   - Escolha a organização e o repositório que deseja analisar.
+   - Siga as instruções para configurar o projeto, o que pode incluir definir permissões e opções de análise.
+
+4. **Gerar o Token de Análise:**
+   - Durante a configuração, você precisará gerar um token de análise que será usado para autenticar o scanner do SonarCloud.
+
+5. **Configurar o Scanner SonarCloud:**
+   - O SonarCloud suporta diferentes linguagens de programação e ferramentas de construção (como Maven, Gradle, npm, etc.).
+   - Siga as instruções específicas fornecidas para sua ferramenta de construção. Geralmente, isso envolve adicionar o plugin do SonarScanner ao seu build script e configurá-lo com o token de análise gerado anteriormente.
+
+6. **Executar a Análise:**
+   - Execute o SonarScanner como parte do seu processo de build.
+   - Por exemplo, se você estiver usando Maven, você pode executar `mvn sonar:sonar` no diretório do seu projeto.
+
+7. **Verificar os Resultados no SonarCloud:**
+   - Após a análise ser concluída, você pode verificar os resultados no dashboard do SonarCloud. Lá, você encontrará informações sobre qualidade de código, vulnerabilidades, bugs, code smells, cobertura de testes, entre outros.
+
+A sequência de criação do projeto primeiro é necessária porque o SonarCloud precisa das configurações do projeto para executar a análise de forma correta e segura. Isso inclui configurar permissões, definir padrões de qualidade e gerar tokens de autenticação.
