@@ -165,3 +165,9 @@ gcloud iam service-accounts add-iam-policy-binding github-actions@toolbox-sandbo
 Adicionar no Repository Secret
 WORKLOAD_IDENTIFIER_PROVIDER = projects/794011605223/locations/global/workloadIdentityPools/github-toolbox-actions-pool/providers/github-actions-oidc
 SERVICE_ACCOUNT = github-actions@toolbox-sandbox-388523.iam.gserviceaccount.com
+
+Action usada [https://github.com/google-github-actions/deploy-cloudrun/tree/v2/](https://github.com/google-github-actions/deploy-cloudrun/tree/v2/)
+
+### Allowing unauthenticated requests
+
+A Cloud Run product recommendation is that CI/CD systems not set or change settings for allowing unauthenticated invocations. New deployments are automatically private services, while deploying a revision of a public (unauthenticated) service will preserve the IAM setting of public (unauthenticated). For more information, see [Controlling access on an individual service.](https://cloud.google.com/run/docs/securing/managing-access)
