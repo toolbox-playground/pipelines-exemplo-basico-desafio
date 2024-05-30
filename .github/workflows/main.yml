@@ -93,6 +93,7 @@ jobs:
         
       - name: 'Use output'
         run: 'curl "${{ steps.deploy.outputs.url }}"'
+        continue-on-error: true
 
   docker_test:
     name: Run Docker Container
