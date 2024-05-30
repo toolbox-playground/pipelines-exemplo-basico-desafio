@@ -141,3 +141,27 @@ Para criar uma conta no Snyk e gerar um token de autenticação, siga os passos 
 
 6. **Salvar o Segredo**:
    Clique em "Add secret" para salvar.
+
+## Deploy na Cloud Run usando Workload Identifier Federation
+
+Criando o Workload Identifier Federation
+gcloud iam workload-identity-pools create my-pool \
+   --location=global \
+   --display-name="My Workload Identity Pool"
+
+gcloud iam workload-identity-pools providers create-oidc my-provider \
+   --location=global \
+   --workload-identity-pool=my-pool \
+   --issuer-uri="https://accounts.google.com" \
+   --attribute-mapping="google.subject=assertion.sub,attribute.aud=assertion.aud"
+
+gcloud iam service-accounts create my-service-account \
+   --display-name="My Service Account"
+
+gcloud iam service-accounts add-iam-policy-binding my-service-account@my-project.iam.gserviceaccount.com \
+   --member="principalSet://iam.googleapis.com/projects/my-project/locations/global/workloadIdentityPools/my-pool/subject/subject-attribute-values/attribute.aud/aud-value" \
+   --role="roles/iam.workloadIdentityUser"
+
+gcloud run services add-iam-policy-binding my-service \
+   --member="serviceAccount:my-service-account@my-project.iam.gserviceaccount.com" \
+   --role="roles/run.invoker"
