@@ -82,8 +82,8 @@ jobs:
       - name: Deploy on Cloud Run
         uses: 'google-github-actions/auth@v2'
         with:
-          workload_identity_provider: 'projects/toolbox-sandbox-388523/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
-          service_account: 'pipeline-iac@toolbox-sandbox-388523.iam.gserviceaccount.com'
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTIFIER_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
         
       - id: 'deploy'
         uses: 'google-github-actions/deploy-cloudrun@v2'
