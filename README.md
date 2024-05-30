@@ -171,3 +171,9 @@ Action usada [https://github.com/google-github-actions/deploy-cloudrun/tree/v2/]
 ### Allowing unauthenticated requests
 
 A Cloud Run product recommendation is that CI/CD systems not set or change settings for allowing unauthenticated invocations. New deployments are automatically private services, while deploying a revision of a public (unauthenticated) service will preserve the IAM setting of public (unauthenticated). For more information, see [Controlling access on an individual service.](https://cloud.google.com/run/docs/securing/managing-access)
+
+Após realizado o deploy:
+1. Ir até [Cloud Run](https://console.cloud.google.com/run?project=toolbox-sandbox-388523)
+2. Clicar na cloud run [nodejs-toolbox-playground](https://console.cloud.google.com/run/detail/us-central1/nodejs-toolbox-playground?project=toolbox-sandbox-388523)
+3. Clicar em [Segurança](https://console.cloud.google.com/run/detail/us-central1/nodejs-toolbox-playground/security?project=toolbox-sandbox-388523)
+4. Em Autenticação, marca `Allow unauthenticated invocations` para permitir acesso a Cloud Run.

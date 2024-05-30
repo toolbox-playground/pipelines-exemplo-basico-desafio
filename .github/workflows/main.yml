@@ -38,7 +38,7 @@ jobs:
         run: cd app && npm test # Comando para executar os testes do projeto
 
   push_to_registry:
-    name: Push Docker image to Docker Hub
+    name: Build and Push Docker image to Docker Hub and Deploy on Cloud Run
     runs-on: ubuntu-latest  # Define o sistema operacional em que o fluxo de trabalho será executado
     needs: test  # Define que o trabalho depende do trabalho "test"
     permissions:
