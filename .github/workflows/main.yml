@@ -6,6 +6,10 @@ on:
       - 'README.md'  # Ignora o arquivo README.md
       - '.gitgnore'  # Ignora o arquivo .gitignore
       - 'release.yml'  # Ignora o arquivo release.yml
+  workflow_dispatch: # Evento que aciona o fluxo de trabalho manualmente
+    inputs: # Define os inputs do fluxo de trabalho
+      name: # Define o input "name"
+        description: 'Trigger manual do Workflow' # Descrição do input
 
 jobs:
 
