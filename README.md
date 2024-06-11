@@ -4,7 +4,7 @@
 
 ## O que é o Desafio GitHub Actions
 
-Este repositório tem por finalidade exemplificar o uso do GitHub Actions para automatizar o processo de build, testes, deploy na Cloud Run e análise de código utilizando o SonarCloud e o Snyk.
+Este repositório serve como laboratório para a prática e o uso do GitHub Actions para criação de pipelines que possuem a finalizade de automatizar o processo de CI/CD build, testes, deploy na Cloud Run e análise de código utilizando o SonarCloud e o Snyk.
 
 ## GitHub Actions
 O GitHub Actions é uma plataforma de automação que permite criar fluxos de trabalho personalizados para o seu repositório. Neste desafio, utilizamos o GitHub Actions para executar as seguintes etapas:
