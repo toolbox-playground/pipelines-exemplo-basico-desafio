@@ -94,9 +94,9 @@ SERVICE_ACCOUNT = github-actions@toolbox-sandbox-388523.iam.gserviceaccount.com
 ### Acesso para usuários não autenticados
 
 Após realizado o deploy:
-1. Ir até [Cloud Run](https://console.cloud.google.com/run?project=toolbox-sandbox-388523)
-2. Clicar na cloud run [nodejs-toolbox-playground](https://console.cloud.google.com/run/detail/us-central1/nodejs-toolbox-playground?project=toolbox-sandbox-388523)
-3. Clicar em [Segurança](https://console.cloud.google.com/run/detail/us-central1/nodejs-toolbox-playground/security?project=toolbox-sandbox-388523)
+1. Ir até [Cloud Run](https://console.cloud.google.com/run)
+2. Clicar na cloud run `nodejs-toolbox-playground`
+3. Clicar em `Segurança`
 4. Em Autenticação, marca `Allow unauthenticated invocations` para permitir acesso a Cloud Run.
 
 Uma recomendação do produto Cloud Run é que sistemas CI/CD não definam ou alterem as configurações para permitir invocações não autenticadas. Novas implantações são automaticamente serviços privados, enquanto a implantação de uma revisão de um serviço público (não autenticado) preservará a configuração IAM de público (não autenticado). Para mais informações, consulte [Controlando o acesso em um serviço individual](https://cloud.google.com/run/docs/securing/managing-access).
