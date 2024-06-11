@@ -142,7 +142,7 @@ jobs:
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
           -Dsonar.projectName=${{ secrets.SONAR_PROJECT_NAME }}
           -Dsonar.projectVersion=1.0
-          -Dsonar.sources=.
+          -Dsonar.sources=app
           -Dsonar.language=js
           -Dsonar.sourceEncoding=UTF-8
       env: # Define as variáveis de ambiente
