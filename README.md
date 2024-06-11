@@ -39,7 +39,7 @@ As varáveis abaixo devem ser salvas como secrets no GitHub Actions
 
 1. DOCKER_NAMESPACE: Namespace do seu repositório
 2. DOCKER_PASSWORD: Access Tokens gerado no Docker Hub. Link de como fazer [Access Token](https://docs.docker.com/security/for-developers/access-tokens/)
-3. DOCKER_REGISTRY: https://docker.io/
+3. DOCKER_REGISTRY: docker.io
 4. DOCKER_REPOSITORY: Nome do seu repositório no Docker Hub
 5. DOCKER_USERNAME: Usuário do Docker Hub
 6. SERVICE_ACCOUNT: Conta de serviço do GCP utilizada pelo WIF
@@ -49,6 +49,8 @@ As varáveis abaixo devem ser salvas como secrets no GitHub Actions
 10. SONAR_PROJECT_NAME: Nome do projeto no SonarCloud
 11. SONAR_TOKEN: Token de autenticação para o SonarCloud
 12. WORKLOAD_IDENTIFIER_PROVIDER: URL do Pool do Identificador de Carga de Trabalho
+
+E salvar DOCKER_REGISTRY: docker.io também como Repository Variables.
 
 ## Deploy na Cloud Run
 A Cloud Run é uma plataforma de execução de contêineres gerenciada pelo Google Cloud. Para realizar o deploy na Cloud Run, é necessário seguir os seguintes passos:
@@ -71,21 +73,31 @@ Foi utilizado neste exemplo o Workload Identity Federation (WIF), link para estu
 Criando o Workload Identifier Federation. 
 Fonte [Secure your use of third party tools with identity federation](https://cloud.google.com/blog/products/identity-security/secure-your-use-of-third-party-tools-with-identity-federation)
 
+```bash
 gcloud iam workload-identity-pools create github-toolbox-actions-pool \
 --location="global" \
 --description="The pool to authenticate GitHub actions." \
 --display-name="GitHub Actions Pool"
+```
 
+Lembrar de substituir assertion.repository_owner para o seu.
+
+```bash
 gcloud iam workload-identity-pools providers create-oidc github-actions-oidc \
 --workload-identity-pool="github-toolbox-actions-pool" \
 --issuer-uri="https://token.actions.githubusercontent.com/" \
 --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository,attribute.repository_owner=assertion.repository_owner,attribute.branch=assertion.sub.extract('/heads/{branch}/')" \
 --location=global \
 --attribute-condition="assertion.repository_owner=='toolbox-playground'"
+```
 
+Lembrar de substituir a service-accounts para a sua chave de serviço, o principalSet para o seu provedor criado no GCP e nome do repositório que você quer autorizar.
+
+```bash
 gcloud iam service-accounts add-iam-policy-binding github-actions@toolbox-sandbox-388523.iam.gserviceaccount.com \
   --role="roles/iam.workloadIdentityUser" \
---member="principalSet://iam.googleapis.com/projects/794011605223/locations/global/workloadIdentityPools/github-toolbox-actions-pool/attribute.repository/toolbox-playground/pipelines-exemplo-basico-desafio"
+--member="principalSet://iam.googleapis.com/projects/794011605223/locations/global/workloadIdentityPools/github-toolbox-actions-pool/attribute.repository/toolbox-playground/pipelines-exemplo-basico"
+```
 
 Adicionar no Repository Secret
 WORKLOAD_IDENTIFIER_PROVIDER = projects/794011605223/locations/global/workloadIdentityPools/github-toolbox-actions-pool/providers/github-actions-oidc
