@@ -103,6 +103,15 @@ jobs:
         run: 'curl "${{ steps.deploy.outputs.url }}"' # Usa a URL do serviço no Cloud Run
         continue-on-error: true # Continua a execução mesmo se houver erro
 
+      - name: 'Set up Cloud SDK' # Configura o SDK do Google Cloud
+        uses: 'google-github-actions/setup-gcloud@v2' # Usa a ação de configuração do SDK do Google Cloud
+        with:
+          version: '>= 363.0.0' # Define a versão do SDK do Google Cloud
+  
+      - name: 'Use gcloud CLI' # Usa o CLI do Google Cloud
+        run: "curl -H 'Authorization: Bearer $(gcloud auth print-identity-token)' ${{ steps.deploy.outputs.url }}" # Usa o token de identidade do Google Cloud
+        continue-on-error: true # Continua a execução mesmo se houver erro
+
   docker_test: # Nome do trabalho
     name: Run Docker Container # Nome do trabalho
     runs-on: ubuntu-latest # Sistema operacional em que o trabalho será executado (no caso, Ubuntu)
