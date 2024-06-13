@@ -60,6 +60,8 @@ As varáveis abaixo devem ser salvas como `Repository Variables` no GitHub Actio
 1. DOCKER_REGISTRY: docker.io
 2. DOCKER_NAMESPACE: Nome da Organização ou de usuário.
 3. DOCKER_REPOSITORY: Nome do seu repositório no Docker Hub
+4. CLOUD_RUN_SERVICE_NAME: Nome da Cloud Run. Neste exemplo está sendo utlizado o seguinte nome: `nodejs-toolbox-playground-desafio`
+
 
 ## Deploy na Cloud Run
 
@@ -141,7 +143,7 @@ SERVICE_ACCOUNT = github-actions@toolbox-sandbox-388523.iam.gserviceaccount.com
 
 Após realizado o deploy:
 1. Ir até [Cloud Run](https://console.cloud.google.com/run)
-2. Clicar na cloud run `nodejs-toolbox-playground`
+2. Clicar na cloud run `nodejs-toolbox-playground-desafio`
 3. Clicar em `Segurança`
 4. Em Autenticação, marca `Allow unauthenticated invocations` para permitir acesso a Cloud Run.
 
