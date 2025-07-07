@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/toolbox-playground/pipelines-exemplo-basico-desafio/issues"
   },
-  "homepage": "https://github.com/toolbox-playground/pipelines-exemplo-basico-desafio#readme"
+  "homepage": "https://github.com/toolbox-playground/pipelines-exemplo-basico-desafio#readme",
+  "devDependencies": {
+    "standard-version": "^9.5.0"
+  }
 }
