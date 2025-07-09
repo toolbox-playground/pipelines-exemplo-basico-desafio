@@ -18,7 +18,7 @@
   },
   "homepage": "https://bitbucket.org/toolboxdevops/pipeline-example-bb#readme",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.21.2"
   },
   "devDependencies": {
     "mocha": "^10.2.0",
