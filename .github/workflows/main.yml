@@ -184,4 +184,4 @@ jobs:
         with: # Define os parâmetros da ação
           args: --all-projects # Veirifica todas as dependências do projeto
         env: # Define as variáveis de ambiente
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} # Define o token do Snyk
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} # Define o token do Snyk 
