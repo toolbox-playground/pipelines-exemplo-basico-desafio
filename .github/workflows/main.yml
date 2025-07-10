@@ -164,7 +164,6 @@ jobs:
           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
           -Dsonar.organization=${{ secrets.SONAR_ORG }}
           -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
           -Dsonar.projectName=${{ secrets.SONAR_PROJECT_NAME }}
           -Dsonar.projectVersion=1.0
           -Dsonar.sources=app
@@ -185,5 +184,5 @@ jobs:
           args: --all-projects # Veirifica todas as dependências do projeto
         env: # Define as variáveis de ambiente
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} # Define o token do Snyk 
-          
+
           
