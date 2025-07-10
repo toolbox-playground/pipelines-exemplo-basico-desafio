@@ -186,3 +186,4 @@ jobs:
         env: # Define as variáveis de ambiente
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} # Define o token do Snyk 
           
+          
