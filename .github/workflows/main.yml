@@ -4,8 +4,9 @@ on:
   push:  # Evento que aciona o fluxo de trabalho (no caso, um push)
     paths-ignore:
       - 'README.md'  # Ignora o arquivo README.md
-      - '.gitgnore'  # Ignora o arquivo .gitignore
+      - '.gitignore'  # Corrigido aqui
       - 'release.yml'  # Ignora o arquivo release.yml
+
   workflow_dispatch: # Evento que aciona o fluxo de trabalho manualmente
     inputs: # Define os inputs do fluxo de trabalho
       name: # Define o input "name"
@@ -40,6 +41,24 @@ jobs:
         run: cd app && npm install # Comando para instalar as dependências do projeto
       - name: Run tests # Nome do passo
         run: cd app && npm test # Comando para executar os testes do projeto
+
+  trufflehog_scan:
+    name: TruffleHog Secret Scan
+    runs-on: ubuntu-latest
+    needs: build  # Ou use `needs: test` se quiser rodar só após os testes
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install TruffleHog
+        run: |
+          mkdir sec && cd sec
+          curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Secret Scanning with TruffleHog
+        run: |
+          trufflehog filesystem . --only-verified
+      
 
   push_to_registry:
     name: Build and Push Docker image to Docker Hub
@@ -91,32 +110,31 @@ jobs:
     name: Run Docker Container # Nome do trabalho
     runs-on: ubuntu-latest # Sistema operacional em que o trabalho será executado (no caso, Ubuntu)
     needs: push_to_registry # Define que o trabalho depende do trabalho "push_to_registry"
-
     steps: # Passos a serem executados no trabalho
-      
-    - name: Checkout repository # Faz o checkout do repositório
-      uses: actions/checkout@v2 # Usa a ação de checkout do repositório
+      - name: Checkout repository # Faz o checkout do repositório
+        uses: actions/checkout@v2 # Usa a ação de checkout do repositório
 
-    - name: Login to Docker Hub # Faz login no Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin # Usa as credenciais do Docker Hub armazenadas como secretos no repositório
+      - name: Login to Docker Hub # Faz login no Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-    - name: Pull Docker Image # Faz o pull da imagem Docker
-      run: docker pull ${{ vars.DOCKER_NAMESPACE }}/${{ vars.DOCKER_REPOSITORY }}:latest # Usa as credenciais do Docker Hub armazenadas como secretos no repositório
+      - name: Pull Docker Image # Faz o pull da imagem Docker
+        run: docker pull ${{ vars.DOCKER_NAMESPACE }}/${{ vars.DOCKER_REPOSITORY }}:latest
 
-    - name: Run Docker Container # Executa o container Docker
-      run: docker run -d --name nodejs -p 8080:8080 ${{ vars.DOCKER_NAMESPACE }}/${{ vars.DOCKER_REPOSITORY }} # Usa as credenciais do Docker Hub armazenadas como secretos no repositório
+      - name: Run Docker Container # Executa o container Docker
+        run: docker run -d --name nodejs -p 8080:8080 ${{ vars.DOCKER_NAMESPACE }}/${{ vars.DOCKER_REPOSITORY }}
 
-    - name: Wait for Container to be ready # Espera o container estar pronto
-      run: sleep 10 # Espera 10 segundos
+      - name: Wait for Container to be ready # Espera o container estar pronto
+        run: sleep 10
 
-    - name: Check if container is running # Verifica se o container está rodando
-      run: docker ps -f 'name=nodejs' # Checa se o container está rodando
+      - name: Check if container is running # Verifica se o container está rodando
+        run: docker ps -f 'name=nodejs'
 
-    - name: Access Container
-      run: curl -s http://localhost:8080
+      - name: Access Container
+        run: curl -s http://localhost:8080
 
-    - name: Stop and Remove Docker Container # Para e remove o container Docker
-      run: docker rm -f nodejs # Para e remove o container Docker
+      - name: Stop and Remove Docker Container # Para e remove o container Docker
+        run: docker rm -f nodejs
+
 
   cloud_run:
     name: Deploy on Cloud Run # Nome do trabalho
@@ -149,29 +167,27 @@ jobs:
         continue-on-error: true # Continua a execução mesmo se houver erro
 
   sonarcloud: # Nome do trabalho
-    name: SonarCloud Scan # Nome do trabalho
-    runs-on: ubuntu-latest # Sistema operacional em que o trabalho será executado (no caso, Ubuntu)
-    steps: # Passos a serem executados no trabalho
-    - uses: actions/checkout@v3 # Passo para fazer o checkout do repositório
-      with: # Define os parâmetros do passo
-        # Desativar o clone superficial é recomendado para melhorar a relevância dos relatórios
-        fetch-depth: 0
-        
-    - name: SonarCloud Scan # Executa a análise do SonarCloud
-      uses: sonarsource/sonarcloud-github-action@master # Usa a ação de análise do SonarCloud
-      with:
-        args: >
-          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-          -Dsonar.organization=${{ secrets.SONAR_ORG }}
-          -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.projectName=${{ secrets.SONAR_PROJECT_NAME }}
-          -Dsonar.projectVersion=1.0
-          -Dsonar.sources=app
-          -Dsonar.language=js
-          -Dsonar.sourceEncoding=UTF-8
-      env: # Define as variáveis de ambiente
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+    steps:                # <-- permanece igual
+      - uses: actions/checkout@v3   # <- adicione dois espaços antes do hífen
+        with:
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ secrets.SONAR_ORG }}
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.projectName=${{ secrets.SONAR_PROJECT_NAME }}
+            -Dsonar.projectVersion=1.0
+            -Dsonar.sources=app
+            -Dsonar.language=js
+            -Dsonar.sourceEncoding=UTF-8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   snyk: # Nome do trabalho
     name: Snyk Security Check # Nome do trabalho
